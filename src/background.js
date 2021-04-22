@@ -1,9 +1,10 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+import path from 'path'
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -20,10 +21,22 @@ async function createWindow() {
             // Use pluginOptions.nodeIntegration, leave this alone
             // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
             // nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
-            nodeIntegration: true,
-            contextIsolation: false,
+
+            // refer: https://www.electronjs.org/docs/tutorial/context-isolation
+            contextIsolation: true,
             webSecurity: false,
-            // preload: path.join(__dirname, 'preload.js')
+            // refer: https://lifesaver.codes/answer/node-integration-is-set-to-false-but-i-need-the-renderer-process-and-the-main-process-communication
+            //        https://stackoverflow.com/questions/52236641/electron-ipc-and-nodeintegration
+            // Q: In order to simulate the real browser environment, I set nodeIntegration to false, 
+            // but I need the renderer process and the main process communication, how can I do it?
+            //
+            // A: When you spawn your browser window set the preload option to a script you wish to preload:
+            // Then in the preload script put in window.ipc = require('ipc'). Do your IPC communication in 
+            // the preload.js and have the code interact with your browser window as if it was loaded using 
+            // script tags.
+            nodeIntegration: true,
+            preload: path.join(__dirname, 'preload.js'),
+            enableRemoteModule: true
         }
     })
 
@@ -82,3 +95,28 @@ if (isDevelopment) {
         })
     }
 }
+
+ipcMain.on('get-app-path', (event, ...args) => {
+    event.sender.send('get-app-path', app.getAppPath())
+})
+
+// import fs from 'fs'
+// import path from 'path'
+// const dir = "/";
+// fs.readdir(dir, function (err, files) {
+//     if (err) throw err;
+//     files.forEach(function (file) {
+//         var filepath = path.join(dir, file);
+//         fs.stat(filepath, function (err, stats) {
+//             if (err) throw err;
+//             if (stats.isDirectory()) {
+//                 console.log(filepath + "/");
+//             } else if (stats.isFile()) {
+//                 console.log(filepath);
+//             } else {
+//                 console.log(filepath + "?");
+//             }
+//         });
+//     });
+// });
+

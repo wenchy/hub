@@ -3,7 +3,7 @@
     <el-container>
       <el-aside width="200px">Aside</el-aside>
       <el-container>
-        <el-header>Header {{ msg }}</el-header>
+        <el-header> Header {{ msg }}, Counter: {{ counter }} </el-header>
         <el-main>
           Main
           <el-button class="el-button--primary">button</el-button>
@@ -35,8 +35,15 @@ export default {
   props: {
     msg: String,
   },
+  mounted() {
+    setInterval(() => {
+      this.counter++;
+    }, 1000);
+  },
   data() {
     return {
+      value1: "",
+      counter: 0,
       tableData: [
         {
           date: "2016-05-03",

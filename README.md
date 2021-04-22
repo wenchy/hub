@@ -30,4 +30,6 @@ npm run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## References
-- [Vue3 + Electron](https://zhuanlan.zhihu.com/p/348892978)
+- [Vue CLI Plugin Electron Builder](https://nklayman.github.io/vue-cli-plugin-electron-builder/)
+- [Vue3 + Electron + ElementPlus](https://zhuanlan.zhihu.com/p/348892978)
+- [Building Desktop Apps With Electron And Vue](https://www.smashingmagazine.com/2020/07/desktop-apps-electron-vue-javascript/)

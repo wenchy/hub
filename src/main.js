@@ -5,4 +5,5 @@ import 'element-plus/lib/theme-chalk/index.css'
 
 const app = createApp(App)
 app.use(ElementPlus)
+// Mount Vue application
 app.mount('#app')
