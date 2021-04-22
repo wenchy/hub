@@ -72,8 +72,18 @@ app.on('activate', () => {
 app.on('ready', async () => {
     if (isDevelopment && !process.env.IS_TEST) {
         // Install Vue Devtools
+        // try {
+        //     await installExtension(VUEJS_DEVTOOLS)
+        // } catch (e) {
+        //     console.error('Vue Devtools failed to install:', e.toString())
+        // }
+
+        // refer: https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/943#issuecomment-756584875
         try {
-            await installExtension(VUEJS_DEVTOOLS)
+            await installExtension({
+                id: 'ljjemllljcmogpfapbkkighbhhppjdbg', //Vue Devtools beta
+                electron: '>=1.2.1'
+            })
         } catch (e) {
             console.error('Vue Devtools failed to install:', e.toString())
         }
@@ -99,24 +109,3 @@ if (isDevelopment) {
 ipcMain.on('get-app-path', (event, ...args) => {
     event.sender.send('get-app-path', app.getAppPath())
 })
-
-// import fs from 'fs'
-// import path from 'path'
-// const dir = "/";
-// fs.readdir(dir, function (err, files) {
-//     if (err) throw err;
-//     files.forEach(function (file) {
-//         var filepath = path.join(dir, file);
-//         fs.stat(filepath, function (err, stats) {
-//             if (err) throw err;
-//             if (stats.isDirectory()) {
-//                 console.log(filepath + "/");
-//             } else if (stats.isFile()) {
-//                 console.log(filepath);
-//             } else {
-//                 console.log(filepath + "?");
-//             }
-//         });
-//     });
-// });
-

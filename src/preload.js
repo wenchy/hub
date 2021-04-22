@@ -1,11 +1,30 @@
 // refer: https://stackoverflow.com/questions/52236641/electron-ipc-and-nodeintegration
 //        https://github.com/electron/electron/blob/v11.0.0/docs/api/context-bridge.md
-import {ipcRenderer, contextBridge } from 'electron';
+import { ipcRenderer, contextBridge } from 'electron';
+import fs from 'fs'
+import path from 'path'
 
-window.getAppPath = ipcRenderer.send('get-app-path')
 contextBridge.exposeInMainWorld('electron', {
     getAppPath: () => {
         ipcRenderer.send('get-app-path')
+    },
+    getDirEntries: (dir) => {
+        let entries = [];
+        let files = fs.readdirSync(dir);
+        files.forEach(file => {
+            if (file.startsWith('$')) {
+                return
+            }
+            let filepath = path.join(dir, file);
+            try {
+                let isDir = fs.statSync(filepath).isDirectory();
+               entries.push({name: file, isDir: isDir, date: ""});
+            } catch (e) {
+                console.error('statSync failed: ', e.toString())
+            }
+
+        });
+        return entries
     }
 });
 
