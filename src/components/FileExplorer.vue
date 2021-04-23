@@ -1,6 +1,6 @@
 <template>
   <input v-model="curPath" placeholder="/" />
-  <p>curPath is: {{ curPath }}</p>
+  <p>curPath: {{ curPath }}</p>
   <el-breadcrumb separator-class="el-icon-arrow-right">
     <el-breadcrumb-item
       v-for="(token, key) in curPathTokens"
@@ -20,28 +20,34 @@
     @row-dblclick="handleRowDoubleClick"
   >
     <el-table-column fixed type="selection" width="55"> </el-table-column>
-    <el-table-column label="Type" width="50">
+    <!-- <el-table-column label="Type" width="50">
       <template #default="scope">
         <i :class="showFileIcon(scope.row.isDir)"></i>
-        <!-- <span style="margin-left: 10px">{{ scope.row.isDir }}</span> -->
-      </template>
-    </el-table-column>
-    <!-- <el-table-column label="Name" sortable>
-      <template #default="scope">
-        <i :class="showType(scope.row.isDir)"></i>
-        <span style="margin-left: 10px">{{ scope.row.name }}</span>
       </template>
     </el-table-column> -->
-    <el-table-column prop="name" sortable label="Name"> </el-table-column>
-    <!-- <el-table-column prop="size" label="Size"> </el-table-column> -->
-    <el-table-column prop="mtime" sortable label="Date modified">
+    <el-table-column label="Name" sortable>
+      <template #default="scope">
+        <i :class="showFileIcon(scope.row.isDir)"></i>
+        <span style="margin-left: 5px">{{ scope.row.name }}</span>
+      </template>
+    </el-table-column>
+    <!-- <el-table-column prop="name" sortable label="Name"> </el-table-column> -->
+    <el-table-column sortable label="Date modified" width="200">
+      <template #default="scope">
+        <span>{{ getTimeString(scope.row.mtime) }}</span>
+      </template>
+    </el-table-column>
+    <el-table-column sortable label="Size" width="100">
+      <template #default="scope">
+        <span>{{ scope.row.isDir ? "" : getFileSize(scope.row.size) }}</span>
+      </template>
     </el-table-column>
   </el-table>
 </template>
 
 <script>
+import { ElMessage } from "element-plus";
 console.log(window.electron);
-
 export default {
   name: "FileExplorer",
   props: {
@@ -55,20 +61,47 @@ export default {
     return {
       counter: 0,
       curPath: "/",
-      curPathTokens: { "\\": "首页" },
+      curPathTokens: { "/": "🏠" },
       // tableData: window.electron.getDirEntries(this.curPath),
       multipleSelection: [],
+      lastTableData: [],
     };
   },
   methods: {
     getTableData() {
-      return window.electron.getDirEntries(this.curPath);
+      try {
+        let entries = window.electron.getDirEntries(this.curPath);
+        this.lastTableData = entries;
+        return entries;
+      } catch (e) {
+        console.log("getDirEntries failed: ", e.toString());
+        ElMessage({
+          showClose: true,
+          message: "路径非法: " + e.toString(),
+          type: "error",
+        });
+        // return this.lastTableData;
+      }
     },
     showFileIcon(isDir) {
       if (isDir) {
         return "el-icon-folder";
       }
       return "el-icon-document";
+    },
+    getFileSize(size) {
+      let mbSize = size / 1024 / 1024;
+      if (mbSize < 1) {
+        return (size / 1024).toFixed(2).toString() + "KB";
+      } else {
+        return mbSize.toFixed(2).toString() + "MB";
+      }
+    },
+    getTimeString(datetime) {
+      return datetime
+        .toISOString()
+        .replace(/T/, " ") // replace T with a space
+        .replace(/\..+/, ""); // delete the dot and everything after
     },
     toggleSelection(rows) {
       if (rows) {
@@ -94,27 +127,39 @@ export default {
         window.electron.exec(row.path);
       }
       // console.log(row);
-      // console.log(column);
-      // console.log(event);
+      console.log(column);
+      console.log(event);
     },
     getPathTokens(path) {
-      let tokens = { "\\": "首页" };
+      let tokens = { "/": "🏠" };
       if (this.curPath != undefined) {
         let names = path.split("\\");
         let ppath = "";
         for (const name of names) {
           if (name.trim() == "") continue;
-          ppath = ppath.concat("\\" + name);
-          tokens[ppath] = name;
+          if (name.indexOf(":") == -1) {
+            ppath += "\\" + name;
+            tokens[ppath] = name;
+          } else {
+            ppath += name;
+            let diskRootPath = name + "\\";
+            tokens[diskRootPath] = name;
+          }
           console.log(ppath);
         }
         console.log(tokens);
-        return tokens;
       }
       return tokens;
     },
     changeDir(event, path) {
+      console.log("change dir: " + path);
       this.curPath = path;
+    },
+  },
+  watch: {
+    // whenever curPath changes, this function will run
+    curPath(newPath, oldPath) {
+      this.curPathTokens = this.getPathTokens(this.curPath);
     },
   },
 };

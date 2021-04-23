@@ -3,7 +3,7 @@
 import { ipcRenderer, contextBridge } from 'electron';
 import fs from 'fs'
 import path from 'path'
-const { exec } = require("child_process");
+const { exec, execSync } = require("child_process");
 
 contextBridge.exposeInMainWorld('electron', {
     getAppPath: () => {
@@ -23,7 +23,8 @@ contextBridge.exposeInMainWorld('electron', {
                     name: file,
                     isDir: stat.isDirectory(),
                     mtime: stat.mtime,
-                    path: filepath
+                    path: filepath,
+                    size: stat.size
                 });
             } catch (e) {
                 console.error('statSync failed: ', e.toString())
@@ -32,8 +33,8 @@ contextBridge.exposeInMainWorld('electron', {
         });
         return entries
     },
-    exec: (path) => {
-        exec(path, (error, stdout, stderr) => {
+    exec: (command) => {
+        exec(command, (error, stdout, stderr) => {
             if (error) {
                 console.log(`error: ${error.message}`);
                 return;
@@ -44,6 +45,9 @@ contextBridge.exposeInMainWorld('electron', {
             }
             console.log(`stdout: ${stdout}`);
         });
+    },
+    execSync: (command) => {
+        return execSync(command, { encoding: 'utf8', maxBuffer: 50 * 1024 * 1024 }).toString();
     }
 });
 
