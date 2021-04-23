@@ -31,5 +31,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## References
 - [Vue CLI Plugin Electron Builder](https://nklayman.github.io/vue-cli-plugin-electron-builder/)
+- [vue-element-admin](https://github.com/PanJiaChen/vue-element-admin)
+- [demo: vue-element-admin](https://panjiachen.github.io/vue-element-admin)
 - [Vue3 + Electron + ElementPlus](https://zhuanlan.zhihu.com/p/348892978)
 - [Building Desktop Apps With Electron And Vue](https://www.smashingmagazine.com/2020/07/desktop-apps-electron-vue-javascript/)

@@ -3,6 +3,7 @@
 import { ipcRenderer, contextBridge } from 'electron';
 import fs from 'fs'
 import path from 'path'
+const { exec } = require("child_process");
 
 contextBridge.exposeInMainWorld('electron', {
     getAppPath: () => {
@@ -17,14 +18,32 @@ contextBridge.exposeInMainWorld('electron', {
             }
             let filepath = path.join(dir, file);
             try {
-                let isDir = fs.statSync(filepath).isDirectory();
-               entries.push({name: file, isDir: isDir, date: ""});
+                let stat = fs.statSync(filepath);
+                entries.push({
+                    name: file,
+                    isDir: stat.isDirectory(),
+                    mtime: stat.mtime,
+                    path: filepath
+                });
             } catch (e) {
                 console.error('statSync failed: ', e.toString())
             }
 
         });
         return entries
+    },
+    exec: (path) => {
+        exec(path, (error, stdout, stderr) => {
+            if (error) {
+                console.log(`error: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                console.log(`stderr: ${stderr}`);
+                return;
+            }
+            console.log(`stdout: ${stdout}`);
+        });
     }
 });
 
