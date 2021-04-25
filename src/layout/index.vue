@@ -1,7 +1,7 @@
 <template>
   <div class="common-layout">
     <el-container>
-      <el-aside :width="isCollapse ? '65px' : '200px'">
+      <el-aside :width="isCollapse ? '66px' : '202px'">
         <el-menu
           default-active="1-4-1"
           @open="handleOpen"
@@ -90,25 +90,15 @@ export default {
 .el-header,
 .el-footer {
   background-color: #b3c0d1;
-  color: #333;
-  text-align: center;
   line-height: 60px;
 }
 
 .el-aside {
   background-color: #d3dce6;
   /* background-color: #545c64; */
-  color: #333;
-  text-align: center;
 }
 
 .el-main {
   background-color: #e9eef3;
-  color: #333;
-  text-align: center;
-}
-
-body > .el-container {
-  margin-bottom: 40px;
 }
 </style>

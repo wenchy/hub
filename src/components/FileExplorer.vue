@@ -1,17 +1,20 @@
 <template>
   <input v-model="curPath" placeholder="/" />
   <p>curPath: {{ curPath }}</p>
-  <el-breadcrumb separator-class="el-icon-arrow-right">
-    <el-breadcrumb-item
-      v-for="(token, key) in curPathTokens"
-      :key="key"
-      :path="key"
-      :to="key"
-      @click="changeDir($event, key)"
-    >
-      {{ token }}
-    </el-breadcrumb-item>
-  </el-breadcrumb>
+  <p>
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item
+        v-for="(token, key) in curPathTokens"
+        :key="key"
+        :path="key"
+        
+        @click="changeDir($event, key)"
+      >
+        <!-- :to="key" -->
+        {{ token }}
+      </el-breadcrumb-item>
+    </el-breadcrumb>
+  </p>
   <el-table
     :data="getTableData()"
     height="250"
@@ -160,7 +163,7 @@ export default {
     // whenever curPath changes, this function will run
     curPath(newPath, oldPath) {
       this.curPathTokens = this.getPathTokens(this.curPath);
-      console.log(newPath, oldPath)
+      console.log(newPath, oldPath);
     },
   },
 };
