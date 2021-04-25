@@ -26,18 +26,11 @@
               <span>App</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="/">选项1</el-menu-item>
-              <el-menu-item index="/about">选项2</el-menu-item>
+              <el-menu-item index="/file-explorer">file-explorer</el-menu-item>
+              <el-menu-item index="/about">about</el-menu-item>
             </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="1-3">选项3</el-menu-item>
-            </el-menu-item-group>
-            <el-submenu index="1-4">
-              <template #title>选项4</template>
-              <el-menu-item index="1-4-1">选项1</el-menu-item>
-            </el-submenu>
           </el-submenu>
-          <el-menu-item index="2">
+          <!-- <el-menu-item index="2">
             <i class="el-icon-menu"></i>
             <template #title>导航二</template>
           </el-menu-item>
@@ -48,13 +41,13 @@
           <el-menu-item index="4">
             <i class="el-icon-setting"></i>
             <template #title>导航四</template>
-          </el-menu-item>
+          </el-menu-item> -->
         </el-menu>
       </el-aside>
       <el-container>
         <el-header> Header {{ msg }}, Counter: {{ counter }} </el-header>
         <el-main>
-            <router-view></router-view>
+          <router-view></router-view>
         </el-main>
         <el-footer>Footer</el-footer>
       </el-container>
@@ -64,7 +57,7 @@
 
 <script>
 export default {
-  name: "Test",
+  name: "Layout",
   props: {
     msg: String,
   },
@@ -72,35 +65,6 @@ export default {
     setInterval(() => {
       this.counter++;
     }, 1000);
-  },
-  data() {
-    return {
-      value1: "",
-      counter: 0,
-      isCollapse: false,
-      tableData: [
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-08",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-06",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-        {
-          date: "2016-05-07",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄",
-        },
-      ],
-    };
   },
   methods: {
     handleOpen(key, keyPath) {
@@ -148,4 +112,3 @@ body > .el-container {
   margin-bottom: 40px;
 }
 </style>
-

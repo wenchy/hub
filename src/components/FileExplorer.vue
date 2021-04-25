@@ -160,6 +160,7 @@ export default {
     // whenever curPath changes, this function will run
     curPath(newPath, oldPath) {
       this.curPathTokens = this.getPathTokens(this.curPath);
+      console.log(newPath, oldPath)
     },
   },
 };
