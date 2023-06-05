@@ -57,7 +57,7 @@
 
 <script>
 export default {
-  name: "Layout",
+  name: "HomeLayout",
   props: {
     msg: String,
   },

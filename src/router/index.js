@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Layout from '@/layout'
+import HomeLayout from '@/layout/HomeLayout'
 import FileExplorer from '@/components/FileExplorer'
 import About from '@/components/About'
 import NotFound from '@/components/NotFound'
@@ -9,7 +9,7 @@ export const router = createRouter({
     routes: [
         {
             path: '/',
-            component: Layout,
+            component: HomeLayout,
             redirect: '/about',
             children: [
                 {
